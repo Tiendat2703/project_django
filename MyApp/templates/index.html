@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VISUALIZATION BẰNG D3_ TRẦN TIẾN ĐẠT</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <!-- Thêm Bootstrap CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css">
+  <style>
+    body {
+      text-align: center;
+      font-family: Arial, sans-serif;
+      background-color: #f8f9fa;
+    }
+    .tab-container {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .tab {
+      padding: 10px 20px;
+      cursor: pointer;
+      border: 1px solid #ccc;
+      margin: 0 5px;
+      background-color: #f9f9f9;
+    }
+    .tab.active {
+      background-color: #ddd;
+      font-weight: bold;
+    }
+    .chart-container {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      width: 95vw;
+      margin: 0 auto;
+    }
+    #chart {
+      flex: 3;
+    }
+    #legend {
+      flex: 1;
+      text-align: left;
+      padding-left: 10px;
+      border: 1px solid #ccc;
+      background: #f9f9f9;
+      padding: 10px;
+      min-width: 250px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Thêm Thanh điều hướng (Navbar) -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">Django Assigment</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/index/">Visualization</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/upload/">Upload</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <h2>BÀI TẬP VISUALIZATION BẰNG D3 TRẦN TIẾN ĐẠT</h2>
+  <div class="tab-container" id="tabs">
+    <div class="tab active" data-quarter="Q1">Q1</div>
+    <div class="tab" data-quarter="Q2">Q2</div>
+    <div class="tab" data-quarter="Q3">Q3</div>
+    <div class="tab" data-quarter="Q4">Q4</div>
+    <div class="tab" data-quarter="Q5">Q5</div>
+    <div class="tab" data-quarter="Q6">Q6</div>
+    <div class="tab" data-quarter="Q7">Q7</div>
+    <div class="tab" data-quarter="Q8">Q8</div>
+    <div class="tab" data-quarter="Q9">Q9</div>
+    <div class="tab" data-quarter="Q10">Q10</div>
+    <div class="tab" data-quarter="Q11">Q11</div>
+    <div class="tab" data-quarter="Q12">Q12</div>
+  </div>
+  <div class="chart-container">
+    <div id="chart"></div>
+    <div id="legend"></div>
+  </div>
+
+  <script>
+    function loadScript(quarter) {
+        console.log("Loading:", quarter + ".js");
+        const existingScript = document.querySelector(`script[src="/static/${quarter}.js"]`);
+        
+        if (existingScript) {
+            existingScript.remove();
+        }
+
+        const script = document.createElement("script");
+        script.src = `/static/${quarter}.js`;
+        script.onload = function() {
+            console.log(`${quarter}.js loaded`);
+            if (typeof window[`load${quarter}Chart`] === "function") {
+                window[`load${quarter}Chart`]();
+            } else {
+                console.error(`Function load${quarter}Chart() not found in ${quarter}.js`);
+            }
+        };
+        script.onerror = function() {
+            console.error(`Failed to load ${quarter}.js`);
+        };
+        
+        document.body.appendChild(script);
+    }
+
+    document.querySelectorAll(".tab").forEach(tab => {
+      tab.addEventListener("click", function() {
+        document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+        this.classList.add("active");
+        d3.select("#chart").html("");
+        d3.select("#legend").html("");
+        loadScript(this.getAttribute("data-quarter"));
+      });
+    });
+
+    loadScript("Q1"); 
+  </script>
+
+  <!-- Thêm Bootstrap JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
